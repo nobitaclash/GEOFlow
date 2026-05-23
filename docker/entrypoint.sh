@@ -24,7 +24,7 @@ fi
 
 if [ "${RUN_COMPOSER}" = "true" ]; then
   # Packagist 中国镜像，加速 composer install。
-  COMPOSER_PACKAGIST_MIRROR="${COMPOSER_PACKAGIST_MIRROR:-https://mirrors.aliyun.com/composer/}"
+  COMPOSER_PACKAGIST_MIRROR="${COMPOSER_PACKAGIST_MIRROR:-https://mirrors.tencent.com/composer/}"
   COMPOSER_HOME="${COMPOSER_HOME:-/tmp/composer}"
   export COMPOSER_HOME
   mkdir -p "${COMPOSER_HOME}"

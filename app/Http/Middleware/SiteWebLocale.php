@@ -17,7 +17,7 @@ final class SiteWebLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = trim((string) config('geoflow.public_locale', 'zh_CN'));
+        $locale = trim((string) config('geoflow.public_locale', config('app.locale', 'vi')));
         if ($locale !== '') {
             App::setLocale($locale);
         }

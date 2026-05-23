@@ -4,15 +4,15 @@ FROM ${PHP_CLI_IMAGE}
 
 WORKDIR /var/www/html
 
-# 使用国内 Debian 源，加速 apt 安装（Bookworm：deb822 或经典 sources.list）
-RUN set -eux; \
-    if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
-        sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources; \
-        sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources; \
-    elif [ -f /etc/apt/sources.list ]; then \
-        sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list; \
-        sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list; \
-    fi
+# Sử dụng mirror mặc định của Debian thay vì Aliyun để tránh lỗi mạng ở Việt Nam
+# RUN set -eux; \
+#     if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
+#         sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources; \
+#         sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources; \
+#     elif [ -f /etc/apt/sources.list ]; then \
+#         sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list; \
+#         sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list; \
+#     fi
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -45,12 +45,14 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1 \
     COMPOSER_PROCESS_TIMEOUT=2000
 
-ARG COMPOSER_PACKAGIST_MIRROR=https://mirrors.aliyun.com/composer/
+ARG COMPOSER_PACKAGIST_MIRROR=https://mirrors.tencent.com/composer/
 RUN if [ -n "${COMPOSER_PACKAGIST_MIRROR}" ]; then \
         composer config -g repo.packagist composer "${COMPOSER_PACKAGIST_MIRROR}"; \
     fi
 
 COPY composer.json composer.lock ./
+COPY docker/fix_composer_lock.php ./
+RUN php fix_composer_lock.php && rm fix_composer_lock.php
 RUN composer install --no-interaction --prefer-dist --no-dev --no-scripts
 
 COPY . .
