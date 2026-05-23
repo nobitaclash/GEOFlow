@@ -2496,8 +2496,7 @@ return [
             'stats' => 'Thống kê',
             'recent_articles' => 'Các bài viết gần nhất',
         ],
-        'label' => [
-            'last_failed_at' => 'Lỗi cuối lúc :time',
+
         'label' => [
             'last_failed_at' => 'Lỗi cuối lúc :time',
             'task_name' => 'Tên Task',
